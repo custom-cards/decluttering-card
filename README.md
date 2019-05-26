@@ -16,7 +16,7 @@
 
 This card is for [Lovelace](https://www.home-assistant.io/lovelace) on [Home Assistant](https://www.home-assistant.io/).
 
-We all use multiple times the same configuration accros our lovelace configuration and we don't want to change the same things in a hundred places accross our configuration each time we want to modify something.
+We all use multiple times the same block of configuration across our lovelace configuration and we don't want to change the same things in a hundred places across our configuration each time we want to modify something.
 
 `declutterring-card` to the rescue!! This card allows you to reuse multiple times the same configuration in your lovelace configuration to avoid repetition.
 
