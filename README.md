@@ -6,14 +6,112 @@
 [![custom_updater][customupdaterbadge]][customupdater]
 [![License][license-shield]](LICENSE.md)
 
-[![Project Maintenance][maintainer]][maintenance-shield]
+[![Project Maintenance][maintenance-shield]][maintainer]
 
 <!-- [![Discord][discord-shield]][discord] -->
 <!-- [![Community Forum][forum-shield]][forum] -->
 
 <!-- [![Twitter][twitter]][twitter] -->
-[![Github][maintainer]][github]
+[![Github][github]][maintainer]
 
+This card is for [Lovelace](https://www.home-assistant.io/lovelace) on [Home Assistant](https://www.home-assistant.io/).
+
+We all use multiple times the same configuration accros our lovelace configuration and we don't want to change the same things in a hundred places accross our configuration each time we want to modify something.
+
+`decluterring-card` to the rescue!! This card allows you to reuse multiple times the same configuration in your lovelace configuration to avoid repetition.
+
+## Configuration
+
+### Defining your templates
+
+First, you need to define your templates.
+
+The templates are defined in a object at the root of your lovelace configuration. This object needs to be named `decluttering_templates`.
+
+This object needs to contains your templates declaration, each template has a name and can contain variables. A variable needs to be enclosed in double square brackets `[[variable_name]]`. It will later be replaced by a real value when you instanciate a card which uses this template.
+
+Eg in your `lovelace-ui.yaml`:
+```yaml
+resources:
+  - url: /local/decluttering-card.js
+    type: module
+
+decluttering_templates:
+  my_first_template:     # This is the name of a template
+    type: custom:button-card
+    name: '[[name]]'
+    icon: 'mdi:[[icon]]'
+
+  my_second_template:    # This is the name of another template
+    type: custom:vertical-stack-in-card
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: custom:button-card
+            entity: '[[entity_1]]'
+          - type: custom:button-card
+            entity: '[[entity_2]]'
+```
+
+### Using the card
+
+| Name | Type | Requirement | Description
+| ---- | ---- | ------- | -----------
+| type | string | **Required** | `custom:decluttering-card`
+| template | object | **Required** | The template to use from `decluttering_templates`
+| variables | list | **Optional** | List of variables and their value to replace in the `template`
+
+Example which references the previous templates:
+```yaml
+- type: custom:decluttering-card
+  template: my_first_template
+  variables:
+    - name: Test Button
+    - icon: fire
+
+- type: custom:decluterring-card
+  template: my_second_template
+  variables:
+    - entity_1: switch.my_switch
+    - entity_2: light.my_light
+```
+
+
+## Installation
+
+### Step 1
+
+Save [decluttering-card](https://github.com/custom-cards/decluttering-card/raw/master/dist/decluttering-card.js) to `<config directory>/www/decluttering-card.js` on your Home Assistant instanse.
+
+**Example:**
+
+```bash
+wget https://raw.githubusercontent.com/custom-cards/decluttering-card/master/dist/decluttering-card.js
+mv decluttering-card.js /config/www/
+```
+
+### Step 2
+
+Link `decluttering-card` inside your `ui-lovelace.yaml` or Raw Editor in the UI Editor
+
+```yaml
+resources:
+  - url: /local/decluttering-card.js
+    type: module
+```
+
+### Step 3
+
+Add a custom element in your `ui-lovelace.yaml` or in the UI Editor as a Manual Card
+
+## Troubleshooting
+
+See this guide: [Troubleshooting](https://github.com/thomasloven/hass-config/wiki/Lovelace-Plugins)
+
+## Developers
+Fork and then clone the repo to your local machine. From the cloned directory run
+
+`npm install && npm run build`
 
 
 [commits-shield]: https://img.shields.io/github/commit-activity/y/custom-cards/decluttering-card.svg?style=for-the-badge
