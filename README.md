@@ -1,4 +1,4 @@
-# Lovelace Template Card
+# Decluttering Card
 📝 Reuse multiple times the same card configuration with variables to declutter your config.
 
 [![GitHub Release][releases-shield]][releases]
