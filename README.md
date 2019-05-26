@@ -8,10 +8,9 @@
 
 [![Project Maintenance][maintenance-shield]][maintainer]
 
-<!-- [![Discord][discord-shield]][discord] -->
-<!-- [![Community Forum][forum-shield]][forum] -->
+[![Discord][discord-shield]][discord]
+[![Community Forum][forum-shield]][forum]
 
-<!-- [![Twitter][twitter]][twitter] -->
 [![Github][github]][maintainer]
 
 This card is for [Lovelace](https://www.home-assistant.io/lovelace) on [Home Assistant](https://www.home-assistant.io/).
@@ -118,10 +117,10 @@ Fork and then clone the repo to your local machine. From the cloned directory ru
 [commits]: https://github.com/custom-cards/decluttering-card/commits/master
 [customupdater]: https://github.com/custom-components/custom_updater
 [customupdaterbadge]: https://img.shields.io/badge/custom__updater-true-success.svg?style=for-the-badge
-<!-- [discord]: https://discord.gg/Qa5fW2R -->
-<!-- [discord-shield]: https://img.shields.io/discord/330944238910963714.svg?style=for-the-badge -->
-<!-- [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge -->
-<!-- [forum]: https://community.home-assistant.io/t/100-templatable-lovelace-configuration-card/105241 -->
+[discord]: https://discord.gg/Qa5fW2R
+[discord-shield]: https://img.shields.io/discord/330944238910963714.svg?style=for-the-badge
+[forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
+[forum]: https://community.home-assistant.io/t/lovelace-decluttering-card/118625
 [license-shield]: https://img.shields.io/github/license/custom-cards/decluttering-card.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-RomRider-blue.svg?style=for-the-badge
 [maintainer]: https://github.com/RomRider
