@@ -18,7 +18,7 @@ This card is for [Lovelace](https://www.home-assistant.io/lovelace) on [Home Ass
 
 We all use multiple times the same configuration accros our lovelace configuration and we don't want to change the same things in a hundred places accross our configuration each time we want to modify something.
 
-`decluterring-card` to the rescue!! This card allows you to reuse multiple times the same configuration in your lovelace configuration to avoid repetition.
+`declutterring-card` to the rescue!! This card allows you to reuse multiple times the same configuration in your lovelace configuration to avoid repetition.
 
 ## Configuration
 
@@ -26,7 +26,7 @@ We all use multiple times the same configuration accros our lovelace configurati
 
 First, you need to define your templates.
 
-The templates are defined in a object at the root of your lovelace configuration. This object needs to be named `decluttering_templates`.
+The templates are defined in an object at the root of your lovelace configuration. This object needs to be named `decluttering_templates`.
 
 This object needs to contains your templates declaration, each template has a name and can contain variables. A variable needs to be enclosed in double square brackets `[[variable_name]]`. It will later be replaced by a real value when you instanciate a card which uses this template.
 
