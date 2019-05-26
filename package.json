@@ -1,0 +1,59 @@
+{
+  "name": "lovelace-template-card",
+  "version": "0.1.0",
+  "description": "Template Card for Lovelace",
+  "main": "dist/lovelace-template-card.js",
+  "pre-commit": [
+    "pre-commit"
+  ],
+  "scripts": {
+    "pre-commit": "./hooks/pre-commit.sh",
+    "build": "npm run rollup && npm run babel",
+    "rollup": "rollup -c",
+    "babel": "babel dist/lovelace-template-card.js --out-file dist/lovelace-template-card.js",
+    "lint": "eslint src/lovelace-template-card.ts",
+    "watch": "rollup -c rollup.debug.config.js --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/custom-cards/lovelace-template-card.git"
+  },
+  "keywords": [
+    "lovelace"
+  ],
+  "author": "RomRider",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/custom-cards/lovelace-template-card/issues"
+  },
+  "homepage": "https://github.com/custom-cards/lovelace-template-card/README.md",
+  "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0",
+    "babel-cli": "^6.26.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.2",
+    "npm": "^6.9.0",
+    "pre-commit": "^1.2.2",
+    "prettier": "^1.17.1",
+    "rollup": "^1.12.2",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^4.2.4",
+    "rollup-plugin-terser": "^4.0.4",
+    "rollup-plugin-typescript2": "^0.20.1",
+    "ts-lit-plugin": "^1.0.6",
+    "typescript": "^3.4.4",
+    "typescript-styled-plugin": "^0.14.0"
+  },
+  "dependencies": {
+    "custom-card-helpers": "github:custom-cards/custom-card-helpers#fix-service-call",
+    "home-assistant-js-websocket": "^3.4.0",
+    "lit-element": "^2.1.0",
+    "lit-html": "^1.0.0"
+  }
+}
