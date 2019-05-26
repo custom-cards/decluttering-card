@@ -1,56 +1,129 @@
-import {
-    LitElement,
-    html,
-    customElement,
-    property,
-    TemplateResult,
-    PropertyValues,
-} from 'lit-element';
 import { LovelaceTemplateCardConfig } from './types';
 import {
     HomeAssistant,
     getLovelace,
-    hasConfigOrEntityChanged,
-    createThing,
 } from 'custom-card-helpers';
 import deepReplace from './deep-replace';
 
-@customElement('lovelace-template-card')
-class LovelaceTemplateCard extends LitElement {
-    @property() public hass?: HomeAssistant;
+// @customElement('lovelace-template-card')
+class LovelaceTemplateCard extends HTMLElement {
+    private _card?: any;
 
-    @property() private _config?: LovelaceTemplateCardConfig;
-
-    @property() private _card?: any;
-
-    protected render(): TemplateResult | void {
-        if (!this._config || !this.hass) {
-            return html``;
-        }
-        const elt = createThing(deepReplace(this._config.variables, this._card));
-        elt.hass = this.hass;
-        return html`${elt}`;
+    constructor() {
+        super();
+        // Make use of shadowRoot to avoid conflicts when reusing
+        this.attachShadow({ mode: 'open' });
     }
 
-    protected shouldUpdate(changedProps: PropertyValues): boolean {
-        if (changedProps.has("_config")) {
-            return true;
+    set hass(hass: HomeAssistant) {
+        if (this._card) {
+            this._card.hass = hass;
         }
-        return false;
     }
 
     public setConfig(config: LovelaceTemplateCardConfig): void {
-        const ll = getLovelace();
-        this._config = config;
-        if (!this._config.template) {
+        if (!config.template) {
             throw new Error('Missing template object in your config');
         }
+        const ll = getLovelace();
         if (!ll.config && !ll.config.lovelace_templates) {
             throw new Error('The object lovelace_templates doesn\'t exist in your main lovelace config.');
         }
-        this._card = ll.config.lovelace_templates[this._config.template]
-        if (!this._card) {
-            throw new Error(`The template "${this._config.template}" doesn't exist in lovelace_templates`);
+        const cardConfig = ll.config.lovelace_templates[config.template]
+        if (!cardConfig) {
+            throw new Error(`The template "${config.template}" doesn't exist in lovelace_templates`);
+        }
+
+        const root = this.shadowRoot;
+        while (root && root.hasChildNodes()) {
+            root.removeChild(root.lastChild!);
+        }
+        const main = document.createElement('div')
+        main.id = 'root';
+        root!.appendChild(main);
+
+        const _createThing = (tag: string, config: any) => {
+            const element = document.createElement(tag) as any;
+            try {
+                element.setConfig(config);
+            } catch (err) {
+                console.error(tag, err);
+                return _createError(err.message, config);
+            }
+            return element;
+        };
+
+        const _createError = (error, config) => {
+            return _createThing("hui-error-card", {
+                type: "error",
+                error,
+                config,
+            });
+        };
+
+        const _fireEvent = (ev, detail, entity: any = null) => {
+            ev = new Event(ev, {
+                bubbles: true,
+                cancelable: false,
+                composed: true,
+            });
+            ev.detail = detail || {};
+
+            if (entity) {
+                entity!.dispatchEvent(ev);
+            } else {
+                document!
+                    .querySelector("home-assistant")!
+                    .shadowRoot!.querySelector("home-assistant-main")!
+                    .shadowRoot!.querySelector("app-drawer-layout partial-panel-resolver")!
+                    .shadowRoot!.querySelector("ha-panel-lovelace")!
+                    .shadowRoot!.querySelector("hui-root")!
+                    .shadowRoot!.querySelector("ha-app-layout #view")!
+                    .firstElementChild!
+                    .dispatchEvent(ev);
+            }
+        }
+
+        let tag = cardConfig.type;
+
+        if (tag.startsWith("divider")) {
+            tag = `hui-divider-row`;
+        } else if (tag.startsWith("custom:")) {
+            tag = tag.substr("custom:".length);
+        } else {
+            tag = `hui-${tag}-card`;
+        }
+
+        if (customElements.get(tag)) {
+            const element = _createThing(tag, deepReplace(config.variables, cardConfig));
+            main!.appendChild(element);
+            this._card = element;
+        } else {
+            // If element doesn't exist (yet) create an error
+            const element = _createError(
+                `Custom element doesn't exist: ${tag}.`,
+                cardConfig
+            );
+            element.style.display = "None";
+
+            const time = setTimeout(() => {
+                element.style.display = "";
+            }, 2000);
+
+            // Remove error if element is defined later
+            customElements.whenDefined(tag).then(() => {
+                clearTimeout(time);
+                _fireEvent("ll-rebuild", {}, element);
+            });
+
+            main!.appendChild(element);
+            this._card = element;
         }
     }
+
+    getCardSize() {
+        return typeof this._card.getCardSize === 'function' ? this._card.getCardSize() : 1
+    }
 }
+
+customElements.define('lovelace-template-card', LovelaceTemplateCard);

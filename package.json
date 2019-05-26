@@ -51,9 +51,7 @@
     "typescript-styled-plugin": "^0.14.0"
   },
   "dependencies": {
-    "custom-card-helpers": "github:custom-cards/custom-card-helpers#fix-service-call",
-    "home-assistant-js-websocket": "^3.4.0",
-    "lit-element": "^2.1.0",
-    "lit-html": "^1.0.0"
+    "custom-card-helpers": "^1.2.1",
+    "home-assistant-js-websocket": "^3.4.0"
   }
 }
