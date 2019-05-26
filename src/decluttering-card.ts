@@ -1,12 +1,11 @@
-import { LovelaceTemplateCardConfig } from './types';
+import { DeclutteringCardConfig } from './types';
 import {
     HomeAssistant,
     getLovelace,
 } from 'custom-card-helpers';
 import deepReplace from './deep-replace';
 
-// @customElement('lovelace-template-card')
-class LovelaceTemplateCard extends HTMLElement {
+class DeclutteringCard extends HTMLElement {
     private _card?: any;
 
     constructor() {
@@ -21,17 +20,17 @@ class LovelaceTemplateCard extends HTMLElement {
         }
     }
 
-    public setConfig(config: LovelaceTemplateCardConfig): void {
+    public setConfig(config: DeclutteringCardConfig): void {
         if (!config.template) {
             throw new Error('Missing template object in your config');
         }
         const ll = getLovelace();
-        if (!ll.config && !ll.config.lovelace_templates) {
-            throw new Error('The object lovelace_templates doesn\'t exist in your main lovelace config.');
+        if (!ll.config && !ll.config.decluttering_templates) {
+            throw new Error('The object decluttering_templates doesn\'t exist in your main lovelace config.');
         }
-        const cardConfig = ll.config.lovelace_templates[config.template]
+        const cardConfig = ll.config.decluttering_templates[config.template]
         if (!cardConfig) {
-            throw new Error(`The template "${config.template}" doesn't exist in lovelace_templates`);
+            throw new Error(`The template "${config.template}" doesn't exist in decluttering_templates`);
         }
 
         const root = this.shadowRoot;
@@ -126,4 +125,4 @@ class LovelaceTemplateCard extends HTMLElement {
     }
 }
 
-customElements.define('lovelace-template-card', LovelaceTemplateCard);
+customElements.define('decluttering-card', DeclutteringCard);

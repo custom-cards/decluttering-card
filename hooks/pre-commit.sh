@@ -5,4 +5,4 @@ set -euo pipefail
 echo "Pre-Commit hooks running..."
 
 npm run build
-git add dist/lovelace-template-card.js
+git add dist/decluttering-card.js

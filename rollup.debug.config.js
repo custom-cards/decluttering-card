@@ -4,7 +4,7 @@ import json from 'rollup-plugin-json';
 import babel from 'rollup-plugin-babel';
 
 export default {
-  input: ['src/lovelace-template-card.ts'],
+  input: ['src/decluttering-card.ts'],
   output: {
     dir: './dist',
     format: 'es',

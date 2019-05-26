@@ -1,8 +1,8 @@
 {
-  "name": "lovelace-template-card",
+  "name": "decluttering-card",
   "version": "0.1.0",
   "description": "Template Card for Lovelace",
-  "main": "dist/lovelace-template-card.js",
+  "main": "dist/decluttering-card.js",
   "pre-commit": [
     "pre-commit"
   ],
@@ -10,13 +10,13 @@
     "pre-commit": "./hooks/pre-commit.sh",
     "build": "npm run rollup && npm run babel",
     "rollup": "rollup -c",
-    "babel": "babel dist/lovelace-template-card.js --out-file dist/lovelace-template-card.js",
-    "lint": "eslint src/lovelace-template-card.ts",
+    "babel": "babel dist/decluttering-card.js --out-file dist/decluttering-card.js",
+    "lint": "eslint src/decluttering-card.ts",
     "watch": "rollup -c rollup.debug.config.js --watch"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/custom-cards/lovelace-template-card.git"
+    "url": "git+https://github.com/custom-cards/decluttering-card.git"
   },
   "keywords": [
     "lovelace"
@@ -24,9 +24,9 @@
   "author": "RomRider",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/custom-cards/lovelace-template-card/issues"
+    "url": "https://github.com/custom-cards/decluttering-card/issues"
   },
-  "homepage": "https://github.com/custom-cards/lovelace-template-card/README.md",
+  "homepage": "https://github.com/custom-cards/decluttering-card/README.md",
   "devDependencies": {
     "@babel/core": "^7.4.4",
     "@babel/plugin-proposal-class-properties": "^7.4.4",

@@ -5,7 +5,7 @@ import babel from 'rollup-plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 
 export default {
-  input: ['src/lovelace-template-card.ts'],
+  input: ['src/decluttering-card.ts'],
   output: {
     dir: './dist',
     format: 'es',
