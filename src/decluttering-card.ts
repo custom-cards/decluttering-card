@@ -1,4 +1,4 @@
-import { DeclutteringCardConfig } from './types';
+import { DeclutteringCardConfig, TemplateConfig } from './types';
 import {
     HomeAssistant,
     getLovelace,
@@ -28,8 +28,8 @@ class DeclutteringCard extends HTMLElement {
         if (!ll.config && !ll.config.decluttering_templates) {
             throw new Error('The object decluttering_templates doesn\'t exist in your main lovelace config.');
         }
-        const cardConfig = ll.config.decluttering_templates[config.template]
-        if (!cardConfig) {
+        const templateConfig = ll.config.decluttering_templates[config.template] as TemplateConfig;
+        if (!templateConfig || !templateConfig.card) {
             throw new Error(`The template "${config.template}" doesn't exist in decluttering_templates`);
         }
 
@@ -83,7 +83,7 @@ class DeclutteringCard extends HTMLElement {
             }
         }
 
-        let tag = cardConfig.type;
+        let tag = templateConfig.card.type;
 
         if (tag.startsWith("divider")) {
             tag = `hui-divider-row`;
@@ -94,14 +94,14 @@ class DeclutteringCard extends HTMLElement {
         }
 
         if (customElements.get(tag)) {
-            const element = _createThing(tag, deepReplace(config.variables, cardConfig));
+            const element = _createThing(tag, deepReplace(config.variables, templateConfig));
             main!.appendChild(element);
             this._card = element;
         } else {
             // If element doesn't exist (yet) create an error
             const element = _createError(
                 `Custom element doesn't exist: ${tag}.`,
-                cardConfig
+                templateConfig
             );
             element.style.display = "None";
 
