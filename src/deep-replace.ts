@@ -5,7 +5,7 @@ export default (
     templateConfig: TemplateConfig,
 ): any => {
     if (!variables && !templateConfig.default) {
-        return templateConfig;
+        return templateConfig.card;
     }
     let variableArray: VariablesConfig[] = [];
     if (variables) {
@@ -20,7 +20,6 @@ export default (
         const value = Object.values(variable)[0];
         const rxp = new RegExp(`\\[\\[${key}\\]\\]`, "gm");
         const rxp2 = new RegExp(`"\\[\\[${key}\\]\\]"`, "gm");
-        console.log(`${value}: ${typeof value}`);
         if (typeof value === 'number' || typeof value === 'boolean') {
             jsonConfig = jsonConfig.replace(rxp2, (value as unknown as string));
         }

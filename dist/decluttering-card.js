@@ -183,11 +183,11 @@ var e = {},
   }return null;
 },
     v = (e, t) => {
-  if (!e && !t.default) return t;let n = [];e && (n = e.slice(0)), t.default && (n = n.concat(t.default));let o = JSON.stringify(t.card);return n.forEach(e => {
+  if (!e && !t.default) return t.card;let n = [];e && (n = e.slice(0)), t.default && (n = n.concat(t.default));let o = JSON.stringify(t.card);return n.forEach(e => {
     const t = Object.keys(e)[0],
           n = Object.values(e)[0],
           r = new RegExp(`\\[\\[${t}\\]\\]`, "gm"),
-          i = new RegExp(`"\\[\\[${t}\\]\\]"`, "gm");console.log(`${n}: ${typeof n}`), "number" != typeof n && "boolean" != typeof n || (o = o.replace(i, n)), o = o.replace(r, n);
+          i = new RegExp(`"\\[\\[${t}\\]\\]"`, "gm");"number" != typeof n && "boolean" != typeof n || (o = o.replace(i, n)), o = o.replace(r, n);
   }), JSON.parse(o);
 };customElements.define("decluttering-card", class extends HTMLElement {
   constructor() {
