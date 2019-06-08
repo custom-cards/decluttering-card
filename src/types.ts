@@ -6,3 +6,8 @@ export interface DeclutteringCardConfig {
 export interface VariablesConfig {
     [key: string]: any;
 }
+
+export interface TemplateConfig {
+    default: VariablesConfig[];
+    card: any;
+}

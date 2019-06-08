@@ -17,7 +17,7 @@ This card is for [Lovelace](https://www.home-assistant.io/lovelace) on [Home Ass
 
 We all use multiple times the same block of configuration across our lovelace configuration and we don't want to change the same things in a hundred places across our configuration each time we want to modify something.
 
-`declutterring-card` to the rescue!! This card allows you to reuse multiple times the same configuration in your lovelace configuration to avoid repetition.
+`declutterring-card` to the rescue!! This card allows you to reuse multiple times the same configuration in your lovelace configuration to avoid repetition and supports variables and default values.
 
 ## Configuration
 
@@ -27,9 +27,23 @@ First, you need to define your templates.
 
 The templates are defined in an object at the root of your lovelace configuration. This object needs to be named `decluttering_templates`.
 
-This object needs to contains your templates declaration, each template has a name and can contain variables. A variable needs to be enclosed in double square brackets `[[variable_name]]`. It will later be replaced by a real value when you instanciate a card which uses this template.
+This object needs to contains your templates declaration, each template has a name and can contain variables. A variable needs to be enclosed in double square brackets `[[variable_name]]`. It will later be replaced by a real value when you instanciate a card which uses this template. If a variable is alone on it's line, enclose it in single quotes: `'[[variable_name]]'`.
 
-Eg in your `lovelace-ui.yaml`:
+You can also define default values for your variables in the `default` object.
+
+```yaml
+decluttering_templates:
+  <template_name>
+    default:  # This is optional
+      - <variable_name>: <variable_value>
+      - <variable_name>: <variable_value>
+      [...]
+    card:  # This is where you put your card config (it can be a card embedding other cards)
+      type: custom:my-super-card
+      [...]
+```
+
+Example in your `lovelace-ui.yaml`:
 ```yaml
 resources:
   - url: /local/decluttering-card.js
@@ -37,19 +51,23 @@ resources:
 
 decluttering_templates:
   my_first_template:     # This is the name of a template
-    type: custom:button-card
-    name: '[[name]]'
-    icon: 'mdi:[[icon]]'
+    default:
+      - icon: fire
+    card:
+      type: custom:button-card
+      name: '[[name]]'
+      icon: 'mdi:[[icon]]'
 
   my_second_template:    # This is the name of another template
-    type: custom:vertical-stack-in-card
-    cards:
-      - type: horizontal-stack
-        cards:
-          - type: custom:button-card
-            entity: '[[entity_1]]'
-          - type: custom:button-card
-            entity: '[[entity_2]]'
+    card:
+      type: custom:vertical-stack-in-card
+      cards:
+        - type: horizontal-stack
+          cards:
+            - type: custom:button-card
+              entity: '[[entity_1]]'
+            - type: custom:button-card
+              entity: '[[entity_2]]'
 ```
 
 ### Using the card
@@ -66,7 +84,11 @@ Example which references the previous templates:
   template: my_first_template
   variables:
     - name: Test Button
-    - icon: fire
+    - icon: arrow-up
+
+- type: custom:decluttering-card
+  template: my_first_template
+  variables: Default Icon Button
 
 - type: custom:decluterring-card
   template: my_second_template
