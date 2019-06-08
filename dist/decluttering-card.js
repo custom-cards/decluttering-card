@@ -186,8 +186,12 @@ var e = {},
   if (!e && !t.default) return t.card;let n = [];e && (n = e.slice(0)), t.default && (n = n.concat(t.default));let o = JSON.stringify(t.card);return n.forEach(e => {
     const t = Object.keys(e)[0],
           n = Object.values(e)[0],
-          r = new RegExp(`\\[\\[${t}\\]\\]`, "gm"),
-          i = new RegExp(`"\\[\\[${t}\\]\\]"`, "gm");"number" != typeof n && "boolean" != typeof n || (o = o.replace(i, n)), o = o.replace(r, n);
+          r = new RegExp(`\\[\\[${t}\\]\\]`, "gm");if ("number" == typeof n || "boolean" == typeof n) {
+      const e = new RegExp(`"\\[\\[${t}\\]\\]"`, "gm");o = o.replace(e, n);
+    }if ("object" == typeof n) {
+      const e = new RegExp(`"\\[\\[${t}\\]\\]"`, "gm"),
+            r = JSON.stringify(n);o = o.replace(e, r);
+    } else o = o.replace(r, n);
   }), JSON.parse(o);
 };customElements.define("decluttering-card", class extends HTMLElement {
   constructor() {

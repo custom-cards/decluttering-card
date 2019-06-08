@@ -19,11 +19,17 @@ export default (
         const key = Object.keys(variable)[0];
         const value = Object.values(variable)[0];
         const rxp = new RegExp(`\\[\\[${key}\\]\\]`, "gm");
-        const rxp2 = new RegExp(`"\\[\\[${key}\\]\\]"`, "gm");
         if (typeof value === 'number' || typeof value === 'boolean') {
+            const rxp2 = new RegExp(`"\\[\\[${key}\\]\\]"`, "gm");
             jsonConfig = jsonConfig.replace(rxp2, (value as unknown as string));
         }
-        jsonConfig = jsonConfig.replace(rxp, value);
+        if (typeof value === 'object') {
+            const rxp2 = new RegExp(`"\\[\\[${key}\\]\\]"`, "gm");
+            const valueString = JSON.stringify(value);
+            jsonConfig = jsonConfig.replace(rxp2, valueString);
+        } else {
+            jsonConfig = jsonConfig.replace(rxp, value);
+        }
     });
     return JSON.parse(jsonConfig);
 }
