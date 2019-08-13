@@ -90,7 +90,7 @@ Example which references the previous templates:
   template: my_first_template
   variables: Default Icon Button
 
-- type: custom:decluterring-card
+- type: custom:decluttering-card
   template: my_second_template
   variables:
     - entity_1: switch.my_switch
