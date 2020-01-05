@@ -17,9 +17,7 @@ jobs:
       - restore_cache:
           keys:
             - deps-{{ .Environment.CACHE_VERSION }}-{{ checksum "package-lock.json" }}
-            - deps-{{ .Environment.CACHE_VERSION }}-
-      - run: rm -rf ~/repo/node_modules/custom-card-helpers/.git
-      - run: npm install
+      - run: npm install && npm audit fix
 
       - save_cache:
           paths:
@@ -35,7 +33,7 @@ jobs:
   create-draft-release:
     <<: *defaults
     docker:
-      - image: circleci/golang:1.8
+      - image: circleci/golang:1.13
     steps:
       - attach_workspace:
           at: ~/repo
