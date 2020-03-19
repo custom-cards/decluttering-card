@@ -14,12 +14,19 @@ import {
 import { DeclutteringCardConfig, TemplateConfig } from './types';
 import deepReplace from './deep-replace';
 import getLovelaceCast from './getLovelaceCast';
+import { CARD_VERSION } from './version-const';
 
 const HELPERS = (window as any).loadCardHelpers ? (window as any).loadCardHelpers() : undefined;
 
+console.info(
+  `%c DECLUTTERING-CARD \n%c   Version ${CARD_VERSION}   `,
+  'color: orange; font-weight: bold; background: black',
+  'color: white; font-weight: bold; background: dimgray',
+);
+
 @customElement('decluttering-card')
 class DeclutteringCard extends LitElement {
-  @property() private _card?: any;
+  @property() protected _card?: any;
 
   @property() private _hass?: HomeAssistant;
 
@@ -47,6 +54,7 @@ class DeclutteringCard extends LitElement {
     this._config = deepReplace(config.variables, templateConfig);
     this._createCard(this._config).then((card) => {
       this._card = card;
+      return this._card;
     });
   }
 
@@ -74,9 +82,7 @@ class DeclutteringCard extends LitElement {
         ev.stopPropagation();
         this._rebuildCard(element, config);
       },
-      {
-        once: true,
-      },
+      { once: true },
     );
     return element;
   }
@@ -87,7 +93,7 @@ class DeclutteringCard extends LitElement {
   }
 
   public getCardSize(): number {
-    return typeof this._card.getCardSize === 'function'
+    return this._card && typeof this._card.getCardSize === 'function'
       ? this._card.getCardSize() : 1;
   }
 }

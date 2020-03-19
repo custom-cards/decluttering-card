@@ -12,7 +12,8 @@
     "rollup": "rollup -c",
     "babel": "babel dist/decluttering-card.js --out-file dist/decluttering-card.js",
     "lint": "eslint src/decluttering-card.ts",
-    "watch": "rollup -c rollup.debug.config.js --watch"
+    "watch": "rollup -c rollup.debug.config.js --watch",
+    "update-version": "./hooks/bump-version.sh"
   },
   "repository": {
     "type": "git",
