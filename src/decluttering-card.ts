@@ -1,10 +1,22 @@
 import {
   HomeAssistant,
   getLovelace,
+  createThing,
+  fireEvent,
 } from 'custom-card-helpers';
 import { DeclutteringCardConfig, TemplateConfig } from './types';
 import deepReplace from './deep-replace';
 import getLovelaceCast from './getLovelaceCast';
+
+let helpers = (window as any).cardHelpers;
+const helperPromise = new Promise(async (resolve) => {
+  if (helpers) resolve();
+  if ((window as any).loadCardHelpers) {
+    helpers = await (window as any).loadCardHelpers();
+    (window as any).cardHelpers = helpers;
+    resolve();
+  }
+});
 
 class DeclutteringCard extends HTMLElement {
   private _card?: any;
@@ -42,82 +54,22 @@ class DeclutteringCard extends HTMLElement {
     main.id = 'root';
     root!.appendChild(main);
 
-    const _createThing = (tag: string, config: any) => {
-      const element = document.createElement(tag) as any;
-      try {
-        element.setConfig(config);
-      } catch (err) {
-        console.error(tag, err);
-        return _createError(err.message, config);
-      }
+    if (helpers) {
+      const element = helpers.createCardElement(deepReplace(config.variables, templateConfig));
+      element.hass = this.hass;
+      main!.appendChild(element);
+      this._card = element;
+      // fireEvent(element, 'll-rebuild');
       return element;
-    };
-
-    const _createError = (error, config) => {
-      return _createThing('hui-error-card', {
-        type: 'error',
-        error,
-        config,
-      });
-    };
-
-    const _fireEvent = (ev, detail, entity: any = null) => {
-      ev = new Event(ev, {
-        bubbles: true,
-        cancelable: false,
-        composed: true,
-      });
-      ev.detail = detail || {};
-
-      if (entity) {
-        entity!.dispatchEvent(ev);
-      } else {
-        document!
-          .querySelector('home-assistant')!
-          .shadowRoot!.querySelector('home-assistant-main')!
-          .shadowRoot!.querySelector('app-drawer-layout partial-panel-resolver')!
-          .shadowRoot!.querySelector('ha-panel-lovelace')!
-          .shadowRoot!.querySelector('hui-root')!
-          .shadowRoot!.querySelector('ha-app-layout #view')!
-          .firstElementChild!
-          .dispatchEvent(ev);
-      }
-    };
-
-    let tag = templateConfig.card.type;
-
-    if (tag.startsWith('divider')) {
-      tag = 'hui-divider-row';
-    } else if (tag.startsWith('custom:')) {
-      tag = tag.substr('custom:'.length);
     } else {
-      tag = `hui-${tag}-card`;
-    }
-
-    if (customElements.get(tag)) {
-      const element = _createThing(tag, deepReplace(config.variables, templateConfig));
+      const element = createThing(deepReplace(config.variables, templateConfig));
+      element.hass = this.hass;
       main!.appendChild(element);
       this._card = element;
-    } else {
-      // If element doesn't exist (yet) create an error
-      const element = _createError(
-        `Custom element doesn't exist: ${tag}.`,
-        templateConfig,
-      );
-      element.style.display = 'None';
-
-      const time = setTimeout(() => {
-        element.style.display = '';
-      }, 2000);
-
-      // Remove error if element is defined later
-      customElements.whenDefined(tag).then(() => {
-        clearTimeout(time);
-        _fireEvent('ll-rebuild', {}, element);
+      helperPromise.then(() => {
+        fireEvent(element, 'll-rebuild', {});
       });
-
-      main!.appendChild(element);
-      this._card = element;
+      return element;
     }
   }
 
