@@ -1,4 +1,11 @@
 import {
+  LitElement,
+  html,
+  customElement,
+  property,
+  TemplateResult,
+} from 'lit-element';
+import {
   HomeAssistant,
   getLovelace,
   createThing,
@@ -8,26 +15,18 @@ import { DeclutteringCardConfig, TemplateConfig } from './types';
 import deepReplace from './deep-replace';
 import getLovelaceCast from './getLovelaceCast';
 
-let helpers = (window as any).cardHelpers;
-const helperPromise = new Promise(async (resolve) => {
-  if (helpers) resolve();
-  if ((window as any).loadCardHelpers) {
-    helpers = await (window as any).loadCardHelpers();
-    (window as any).cardHelpers = helpers;
-    resolve();
-  }
-});
+const HELPERS = (window as any).loadCardHelpers ? (window as any).loadCardHelpers() : undefined;
 
-class DeclutteringCard extends HTMLElement {
-  private _card?: any;
+@customElement('decluttering-card')
+class DeclutteringCard extends LitElement {
+  @property() private _card?: any;
 
-  constructor() {
-    super();
-    // Make use of shadowRoot to avoid conflicts when reusing
-    this.attachShadow({ mode: 'open' });
-  }
+  @property() private _hass?: HomeAssistant;
+
+  @property() private _config?: DeclutteringCardConfig;
 
   set hass(hass: HomeAssistant) {
+    this._hass = hass;
     if (this._card) {
       this._card.hass = hass;
     }
@@ -45,37 +44,50 @@ class DeclutteringCard extends HTMLElement {
     if (!templateConfig || !templateConfig.card) {
       throw new Error(`The template "${config.template}" doesn't exist in decluttering_templates`);
     }
-
-    const root = this.shadowRoot;
-    while (root && root.hasChildNodes()) {
-      root.removeChild(root.lastChild!);
-    }
-    const main = document.createElement('div');
-    main.id = 'root';
-    root!.appendChild(main);
-
-    if (helpers) {
-      const element = helpers.createCardElement(deepReplace(config.variables, templateConfig));
-      element.hass = this.hass;
-      main!.appendChild(element);
-      this._card = element;
-      // fireEvent(element, 'll-rebuild');
-      return element;
-    } else {
-      const element = createThing(deepReplace(config.variables, templateConfig));
-      element.hass = this.hass;
-      main!.appendChild(element);
-      this._card = element;
-      helperPromise.then(() => {
-        fireEvent(element, 'll-rebuild', {});
-      });
-      return element;
-    }
+    this._config = deepReplace(config.variables, templateConfig);
+    this._createCard(this._config).then((card) => {
+      this._card = card;
+    });
   }
 
-  getCardSize() {
-    return typeof this._card.getCardSize === 'function' ? this._card.getCardSize() : 1;
+  protected render(): TemplateResult | void {
+    if (!this._hass || !this._card || !this._config)
+      return html``;
+
+    return html`<div>${this._card}</div>`;
+  }
+
+  private async _createCard(config: any): Promise<any> {
+    let element: any;
+    if (HELPERS) {
+      element = (await HELPERS).createCardElement(config);
+      // fireEvent(element, 'll-rebuild');
+    } else {
+      element = createThing(config);
+    }
+    if (this._hass) {
+      element.hass = this._hass;
+    }
+    element.addEventListener(
+      'll-rebuild',
+      (ev) => {
+        ev.stopPropagation();
+        this._rebuildCard(element, config);
+      },
+      {
+        once: true,
+      },
+    );
+    return element;
+  }
+
+  private async _rebuildCard(element: any, config: any) {
+    const newCard = await this._createCard(config);
+    element.replaceWith(newCard);
+  }
+
+  public getCardSize(): number {
+    return typeof this._card.getCardSize === 'function'
+      ? this._card.getCardSize() : 1;
   }
 }
-
-customElements.define('decluttering-card', DeclutteringCard);
