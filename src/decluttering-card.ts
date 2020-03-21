@@ -62,7 +62,7 @@ class DeclutteringCard extends LitElement {
     if (!this._hass || !this._card || !this._config)
       return html``;
 
-    return html`<div>${this._card}</div>`;
+    return html`<div id="root">${this._card}</div>`;
   }
 
   private async _createCard(config: any): Promise<any> {
