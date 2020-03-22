@@ -60,7 +60,8 @@ class DeclutteringCard extends LitElement {
   private async _createCard(config: LovelaceCardConfig): Promise<LovelaceCard> {
     let element: LovelaceCard;
     if (HELPERS) {
-      element = (await HELPERS).createCardElement(config);
+      if (config.type === 'divider') element = (await HELPERS).createRowElement(config);
+      else element = (await HELPERS).createCardElement(config);
       // fireEvent(element, 'll-rebuild');
     } else {
       element = createThing(config);

@@ -5,13 +5,13 @@ resources:
     type: module
 
 decluttering_templates:
-  my_first_template:     # This is the name of a template
+  my_first_template: # This is the name of a template
     default:
       - icon: fire
     card:
-      type: custom:button-card
-      name: '[[name]]'
-      icon: 'mdi:[[icon]]'
+      type: button
+      name: "[[name]]"
+      icon: "mdi:[[icon]]"
   large_divider:
     default:
       - opacity: 0.25
@@ -21,12 +21,14 @@ decluttering_templates:
         background-color: var(--secondary-text-color)
         height: 1px
         margin: 15px auto
-        opacity: '[[opacity]]'
+        opacity: "[[opacity]]"
 
 views:
   - cards:
       - type: custom:decluttering-card
         template: my_first_template
+        variables:
+          - name: This is a test
       - type: entities
         entities:
           - sun.sun
