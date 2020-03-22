@@ -39,11 +39,16 @@ class DeclutteringCard extends LitElement {
       throw new Error("The object decluttering_templates doesn't exist in your main lovelace config.");
     }
     const templateConfig = ll.config.decluttering_templates[config.template] as TemplateConfig;
-    if (!templateConfig || !templateConfig.card) {
+    if (!templateConfig) {
       throw new Error(`The template "${config.template}" doesn't exist in decluttering_templates`);
+    } else if (!(templateConfig.card || templateConfig.element)) {
+      throw new Error('You shoud define either a card or an element in the template');
+    } else if (templateConfig.card && templateConfig.element) {
+      throw new Error('You can define a card and an element in the template');
     }
     this._config = deepReplace(config.variables, templateConfig);
-    this._createCard(this._config).then(card => {
+    const type = templateConfig.card ? 'card' : 'element';
+    this._createCard(this._config, type).then(card => {
       this._card = card;
       return this._card;
     });
@@ -57,12 +62,21 @@ class DeclutteringCard extends LitElement {
     `;
   }
 
-  private async _createCard(config: LovelaceCardConfig): Promise<LovelaceCard> {
+  private async _createCard(config: LovelaceCardConfig, type: 'element' | 'card'): Promise<LovelaceCard> {
     let element: LovelaceCard;
     if (HELPERS) {
-      if (config.type === 'divider') element = (await HELPERS).createRowElement(config);
-      else element = (await HELPERS).createCardElement(config);
-      // fireEvent(element, 'll-rebuild');
+      if (type === 'card') {
+        if (config.type === 'divider') element = (await HELPERS).createRowElement(config);
+        else element = (await HELPERS).createCardElement(config);
+        // fireEvent(element, 'll-rebuild');
+      } else {
+        element = (await HELPERS).createHuiElement(config);
+        if (config.style) {
+          Object.keys(config.style).forEach(prop => {
+            this.style.setProperty(prop, config.style[prop]);
+          });
+        }
+      }
     } else {
       element = createThing(config);
     }
@@ -73,15 +87,19 @@ class DeclutteringCard extends LitElement {
       'll-rebuild',
       ev => {
         ev.stopPropagation();
-        this._rebuildCard(element, config);
+        this._rebuildCard(element, config, type);
       },
       { once: true },
     );
     return element;
   }
 
-  private async _rebuildCard(element: LovelaceCard, config: LovelaceCardConfig): Promise<void> {
-    const newCard = await this._createCard(config);
+  private async _rebuildCard(
+    element: LovelaceCard,
+    config: LovelaceCardConfig,
+    type: 'element' | 'card',
+  ): Promise<void> {
+    const newCard = await this._createCard(config, type);
     element.replaceWith(newCard);
     return;
   }

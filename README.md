@@ -31,6 +31,8 @@ This object needs to contains your templates declaration, each template has a na
 
 You can also define default values for your variables in the `default` object.
 
+For a card:
+
 ```yaml
 decluttering_templates:
   <template_name>
@@ -40,6 +42,20 @@ decluttering_templates:
       [...]
     card:  # This is where you put your card config (it can be a card embedding other cards)
       type: custom:my-super-card
+      [...]
+```
+
+For a Picture-Element:
+
+```yaml
+decluttering_templates:
+  <template_name>
+    default:  # This is optional
+      - <variable_name>: <variable_value>
+      - <variable_name>: <variable_value>
+      [...]
+    element:  # This is where you put your element config
+      type: icon
       [...]
 ```
 

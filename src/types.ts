@@ -10,5 +10,6 @@ export interface VariablesConfig {
 
 export interface TemplateConfig {
   default: VariablesConfig[];
-  card: any;
+  card?: any;
+  element?: any;
 }

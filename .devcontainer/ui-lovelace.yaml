@@ -22,6 +22,19 @@ decluttering_templates:
         height: 1px
         margin: 15px auto
         opacity: "[[opacity]]"
+  demo_icon:
+    element:
+      type: icon
+      icon: mdi:alert-circle
+      title: Problem detected!
+      entity: "[[entity]]"
+      tap_action:
+        action: more-info
+      style:
+        right: 50%
+        top: 50%
+        color: var(--google-red-500)
+        filter: drop-shadow(black 0 0 1px)
 
 views:
   - cards:
@@ -35,3 +48,10 @@ views:
           - type: custom:decluttering-card
             template: large_divider
           - sun.sun
+      - type: picture-elements
+        image: https://www.w3schools.com/w3css/img_lights.jpg
+        elements:
+          - type: custom:decluttering-card
+            template: demo_icon
+            variables:
+              - entity: sun.sun
