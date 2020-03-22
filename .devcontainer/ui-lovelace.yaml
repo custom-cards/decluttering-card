@@ -1,0 +1,35 @@
+resources:
+  - url: http://127.0.0.1:5000/decluttering-card.js
+    type: module
+  - url: https://cdn.jsdelivr.net/gh/thomasloven/lovelace-card-mod@master/card-mod.js
+    type: module
+
+decluttering_templates:
+  my_first_template:     # This is the name of a template
+    default:
+      - icon: fire
+    card:
+      type: custom:button-card
+      name: '[[name]]'
+      icon: 'mdi:[[icon]]'
+  large_divider:
+    default:
+      - opacity: 0.25
+    card:
+      type: divider
+      style:
+        background-color: var(--secondary-text-color)
+        height: 1px
+        margin: 15px auto
+        opacity: '[[opacity]]'
+
+views:
+  - cards:
+      - type: custom:decluttering-card
+        template: my_first_template
+      - type: entities
+        entities:
+          - sun.sun
+          - type: custom:decluttering-card
+            template: large_divider
+          - sun.sun

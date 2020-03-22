@@ -1,4 +1,6 @@
-export default function getLovelaceCast() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function getLovelaceCast(): any {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let root: any = document.querySelector('hc-main');
   root = root && root.shadowRoot;
   root = root && root.querySelector('hc-lovelace');

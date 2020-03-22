@@ -102,7 +102,7 @@ Example which references the previous templates:
 
 ### Step 1
 
-Save [decluttering-card](https://github.com/custom-cards/decluttering-card/raw/master/dist/decluttering-card.js) to `<config directory>/www/decluttering-card.js` on your Home Assistant instanse.
+Save [decluttering-card](https://github.com/custom-cards/decluttering-card/releases/download/latest/decluttering-card.js) to `<config directory>/www/decluttering-card.js` on your Home Assistant instanse.
 
 **Example:**
 
