@@ -1,4 +1,4 @@
-import { LitElement, html, customElement, property, TemplateResult } from 'lit-element';
+import { LitElement, html, customElement, property, TemplateResult, css, CSSResult } from 'lit-element';
 import { HomeAssistant, getLovelace, createThing, LovelaceCardConfig, LovelaceCard } from 'custom-card-helpers';
 import { DeclutteringCardConfig, TemplateConfig } from './types';
 import deepReplace from './deep-replace';
@@ -28,6 +28,24 @@ class DeclutteringCard extends LitElement {
     if (this._card) {
       this._card.hass = hass;
     }
+  }
+
+  static get styles(): CSSResult {
+    return css`
+      :host(.child-card-hidden) {
+        display: none;
+      }
+    `;
+  }
+
+  protected updated(): void {
+    this.updateComplete.then(() => {
+      if (this._card?.style.display === 'none') {
+        this.className = 'child-card-hidden';
+      } else if (this.className === 'child-card-hidden') {
+        this.className = '';
+      }
+    });
   }
 
   public setConfig(config: DeclutteringCardConfig): void {
@@ -91,6 +109,7 @@ class DeclutteringCard extends LitElement {
       },
       { once: true },
     );
+    element.id = 'declutter-child';
     return element;
   }
 
@@ -101,6 +120,7 @@ class DeclutteringCard extends LitElement {
   ): Promise<void> {
     const newCard = await this._createCard(config, type);
     element.replaceWith(newCard);
+    this._card = newCard;
     return;
   }
 

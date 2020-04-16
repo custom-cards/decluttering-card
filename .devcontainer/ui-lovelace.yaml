@@ -10,8 +10,8 @@ decluttering_templates:
       - icon: fire
     card:
       type: button
-      name: "[[name]]"
-      icon: "mdi:[[icon]]"
+      name: '[[name]]'
+      icon: 'mdi:[[icon]]'
   large_divider:
     default:
       - opacity: 0.25
@@ -21,13 +21,13 @@ decluttering_templates:
         background-color: var(--secondary-text-color)
         height: 1px
         margin: 15px auto
-        opacity: "[[opacity]]"
+        opacity: '[[opacity]]'
   demo_icon:
     element:
       type: icon
       icon: mdi:alert-circle
       title: Problem detected!
-      entity: "[[entity]]"
+      entity: '[[entity]]'
       tap_action:
         action: more-info
       style:
@@ -35,6 +35,16 @@ decluttering_templates:
         top: 50%
         color: var(--google-red-500)
         filter: drop-shadow(black 0 0 1px)
+  test_hidden:
+    card:
+      type: conditional
+      conditions:
+        - entity: light.bed_light
+          state: 'on'
+      card:
+        type: entities
+        entities:
+          - sun.sun
 
 views:
   - cards:
@@ -44,7 +54,7 @@ views:
           - name: This is a test
       - type: entities
         entities:
-          - sun.sun
+          - light.bed_light
           - type: custom:decluttering-card
             template: large_divider
           - sun.sun
@@ -55,3 +65,11 @@ views:
             template: demo_icon
             variables:
               - entity: sun.sun
+      - type: horizontal-stack
+        cards:
+          - type: custom:decluttering-card
+            template: my_first_template
+            variables:
+              - name: Full width when light Off
+          - type: custom:decluttering-card
+            template: test_hidden
