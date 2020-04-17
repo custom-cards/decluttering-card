@@ -1,6 +1,6 @@
 {
   "name": "decluttering-card",
-  "version": "0.5.0",
+  "version": "0.6.1",
   "description": "Decluttering Card for Lovelace",
   "main": "dist/decluttering-card.js",
   "scripts": {
