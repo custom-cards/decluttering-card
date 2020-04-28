@@ -54,6 +54,7 @@
   "dependencies": {
     "custom-card-helpers": "^1.5.0",
     "home-assistant-js-websocket": "^5.1.0",
-    "lit-element": "^2.3.0"
+    "lit-element": "^2.3.0",
+    "resize-observer": "^1.0.0"
   }
 }

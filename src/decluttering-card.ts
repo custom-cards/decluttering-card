@@ -3,6 +3,7 @@ import { HomeAssistant, getLovelace, createThing, LovelaceCardConfig, LovelaceCa
 import { DeclutteringCardConfig, TemplateConfig } from './types';
 import deepReplace from './deep-replace';
 import getLovelaceCast from './getLovelaceCast';
+import { ResizeObserver } from 'resize-observer';
 import * as pjson from '../package.json';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,9 +20,11 @@ console.info(
 class DeclutteringCard extends LitElement {
   @property() protected _card?: LovelaceCard;
 
-  @property() private _hass?: HomeAssistant;
-
   @property() private _config?: LovelaceCardConfig;
+
+  private _ro?: ResizeObserver;
+
+  private _hass?: HomeAssistant;
 
   set hass(hass: HomeAssistant) {
     this._hass = hass;
@@ -38,14 +41,18 @@ class DeclutteringCard extends LitElement {
     `;
   }
 
-  protected updated(): void {
+  protected firstUpdated(): void {
     this.updateComplete.then(() => {
-      if (this._card?.style.display === 'none') {
-        this.className = 'child-card-hidden';
-      } else if (this.className === 'child-card-hidden') {
-        this.className = '';
-      }
+      this._displayHidden();
     });
+  }
+
+  protected _displayHidden(): void {
+    if (this._card?.style.display === 'none') {
+      this.classList.add('child-card-hidden');
+    } else if (this.classList.contains('child-card-hidden')) {
+      this.classList.remove('child-card-hidden');
+    }
   }
 
   public setConfig(config: DeclutteringCardConfig): void {
@@ -64,10 +71,14 @@ class DeclutteringCard extends LitElement {
     } else if (templateConfig.card && templateConfig.element) {
       throw new Error('You can define a card and an element in the template');
     }
+    this._ro = new ResizeObserver(() => {
+      this._displayHidden();
+    });
     this._config = deepReplace(config.variables, templateConfig);
     const type = templateConfig.card ? 'card' : 'element';
     this._createCard(this._config, type).then(card => {
       this._card = card;
+      this._ro?.observe(this._card);
       return this._card;
     });
   }
@@ -121,6 +132,7 @@ class DeclutteringCard extends LitElement {
     const newCard = await this._createCard(config, type);
     element.replaceWith(newCard);
     this._card = newCard;
+    this._ro?.observe(this._card);
     return;
   }
 
