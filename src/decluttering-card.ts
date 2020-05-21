@@ -26,7 +26,17 @@ class DeclutteringCard extends LitElement {
 
   private _hass?: HomeAssistant;
 
+  private _type?: 'element' | 'card';
+
   set hass(hass: HomeAssistant) {
+    if (!hass) return;
+    if (!this._hass && hass) {
+      this._createCard(this._config!, this._type!).then(card => {
+        this._card = card;
+        this._card && this._ro?.observe(this._card);
+        return this._card;
+      });
+    }
     this._hass = hass;
     if (this._card) {
       this._card.hass = hass;
@@ -75,12 +85,7 @@ class DeclutteringCard extends LitElement {
       this._displayHidden();
     });
     this._config = deepReplace(config.variables, templateConfig);
-    const type = templateConfig.card ? 'card' : 'element';
-    this._createCard(this._config, type).then(card => {
-      this._card = card;
-      this._ro?.observe(this._card);
-      return this._card;
-    });
+    this._type = templateConfig.card ? 'card' : 'element';
   }
 
   protected render(): TemplateResult | void {
