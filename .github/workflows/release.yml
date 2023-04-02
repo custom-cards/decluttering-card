@@ -1,30 +1,33 @@
 name: Release
 
-on:
-  release:
-    types: [published]
+on: workflow_dispatch
 
 jobs:
-  release:
-    name: Prepare release
+  release-bundle:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dev'
+
+    outputs:
+      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
+      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
+
     steps:
-      - uses: actions/checkout@v1
-
-      # Build
-      - name: Build the file
-        run: |
-          cd /home/runner/work/decluttering-card/decluttering-card
-          npm install
-          npm run build
-
-      # Upload build file to the releas as an asset.
-      - name: Upload zip to release
-        uses: svenstaro/upload-release-action@v1-release
-
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3.6.0
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: /home/runner/work/decluttering-card/decluttering-card/dist/decluttering-card.js
-          asset_name: decluttering-card.js
-          tag: ${{ github.ref }}
-          overwrite: true
+          node-version: 16.x
+      - name: Cache Node.js modules
+        uses: actions/cache@v3.3.1
+        with:
+          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+          key: ${{ runner.OS }}-node-16.x-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-16.x
+            ${{ runner.OS }}-
+      - name: Install dependencies
+        run: npm ci
+      - name: Release
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

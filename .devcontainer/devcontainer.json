@@ -1,8 +1,9 @@
 // See https://aka.ms/vscode-remote/devcontainer.json for format details.
 {
   "name": "Decluttering Card Development",
-  "dockerFile": "Dockerfile",
+  "image": "ghcr.io/ludeeus/devcontainer/generic:stable",
   "context": "..",
+  "remoteUser": "vscode",
   "appPort": [
     "5000:5000",
     "9123:8123"
