@@ -4,10 +4,11 @@
   "description": "Decluttering Card for Lovelace",
   "main": "dist/decluttering-card.js",
   "scripts": {
-    "build": "npm run lint && npm run rollup && npm run babel",
+    "build": "npm run lint && npm run rollup",
     "rollup": "rollup -c",
     "babel": "babel dist/decluttering-card.js --out-file dist/decluttering-card.js",
     "lint": "eslint src/*.ts",
+    "postversion": "npm run build",
     "start": "rollup -c --watch"
   },
   "repository": {
