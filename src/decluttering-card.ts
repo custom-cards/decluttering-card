@@ -1,8 +1,8 @@
 import { LitElement, html, customElement, property, TemplateResult, css, CSSResult } from 'lit-element';
-import { HomeAssistant, getLovelace, createThing, LovelaceCardConfig, LovelaceCard } from 'custom-card-helpers';
+import { HomeAssistant, createThing, LovelaceCardConfig, LovelaceCard } from 'custom-card-helpers';
 import { DeclutteringCardConfig, TemplateConfig } from './types';
 import deepReplace from './deep-replace';
-import getLovelaceCast from './getLovelaceCast';
+import { getLovelace, getLovelaceCast } from './utils';
 import { ResizeObserver } from 'resize-observer';
 import * as pjson from '../package.json';
 
@@ -31,6 +31,7 @@ class DeclutteringCard extends LitElement {
   set hass(hass: HomeAssistant) {
     if (!hass) return;
     if (!this._hass && hass) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this._createCard(this._config!, this._type!).then(card => {
         this._card = card;
         this._card && this._ro?.observe(this._card);
@@ -141,7 +142,7 @@ class DeclutteringCard extends LitElement {
     return;
   }
 
-  public getCardSize(): number {
+  public getCardSize(): Promise<number> | number {
     return this._card && typeof this._card.getCardSize === 'function' ? this._card.getCardSize() : 1;
   }
 }
