@@ -78,9 +78,9 @@ class DeclutteringCard extends LitElement {
     if (!templateConfig) {
       throw new Error(`The template "${config.template}" doesn't exist in decluttering_templates`);
     } else if (!(templateConfig.card || templateConfig.element)) {
-      throw new Error('You shoud define either a card or an element in the template');
+      throw new Error('You should define either a card or an element in the template');
     } else if (templateConfig.card && templateConfig.element) {
-      throw new Error('You can define a card and an element in the template');
+      throw new Error('You cannot define a card and an element in the template');
     }
     this._ro = new ResizeObserver(() => {
       this._displayHidden();
