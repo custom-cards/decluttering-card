@@ -116,6 +116,8 @@ Example which references the previous templates:
 
 ## Installation
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=custom-cards&repository=decluttering-card&category=lovelace)
+
 ### Step 1
 
 Save [decluttering-card](https://github.com/custom-cards/decluttering-card/releases/download/latest/decluttering-card.js) to `<config directory>/www/decluttering-card.js` on your Home Assistant instanse.
