@@ -17,11 +17,11 @@ export default (variables: VariablesConfig[] | undefined, templateConfig: Templa
     const key = Object.keys(variable)[0];
     const value = Object.values(variable)[0];
     if (typeof value === 'number' || typeof value === 'boolean') {
-      const rxp2 = new RegExp(`"\\[\\[${key}\\]\\]"`, 'gm');
+      const rxp2 = new RegExp(`['"]\\[\\[${key}\\]\\]['"]`, 'gm');
       jsonConfig = jsonConfig.replace(rxp2, (value as unknown) as string);
     }
     if (typeof value === 'object') {
-      const rxp2 = new RegExp(`"\\[\\[${key}\\]\\]"`, 'gm');
+      const rxp2 = new RegExp(`['"]\\[\\[${key}\\]\\]['"]`, 'gm');
       const valueString = JSON.stringify(value);
       jsonConfig = jsonConfig.replace(rxp2, valueString);
     } else {
