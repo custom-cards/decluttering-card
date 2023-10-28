@@ -17,7 +17,7 @@ This card is for [Lovelace](https://www.home-assistant.io/lovelace) on [Home Ass
 
 We all use multiple times the same block of configuration across our lovelace configuration and we don't want to change the same things in a hundred places across our configuration each time we want to modify something.
 
-`decluttering-card` to the rescue!! This card allows you to reuse multiple times the same configuration in your lovelace configuration to avoid repetition and supports variables and default values.
+`decluttering-card` to the rescue!! This card allows you to reuse the same lovelace configuration to avoid repetition and supports variables and default values.
 
 ## Configuration
 
@@ -27,7 +27,7 @@ First, you need to define your templates.
 
 The templates are defined in an object at the root of your lovelace configuration. This object needs to be named `decluttering_templates`.
 
-This object needs to contains your templates declaration, each template has a name and can contain variables. A variable needs to be enclosed in double square brackets `[[variable_name]]`. It will later be replaced by a real value when you instanciate a card which uses this template. If a variable is alone on it's line, enclose it in single quotes: `'[[variable_name]]'`.
+This object needs to contains your templates declaration; each template has a name and can contain variables. A variable needs to be enclosed in double square brackets `[[variable_name]]`. It will later be replaced by a real value when you instantiate a card which uses this template. If a variable is alone on its line, enclose it in single quotes: `'[[variable_name]]'`.
 
 You can also define default values for your variables in the `default` object.
 
@@ -92,7 +92,7 @@ decluttering_templates:
 | ---- | ---- | ------- | -----------
 | type | string | **Required** | `custom:decluttering-card`
 | template | object | **Required** | The template to use from `decluttering_templates`
-| variables | list | **Optional** | List of variables and their value to replace in the `template`
+| variables | list | **Optional** | List of variables and their values to replace in the `template`
 
 Example which references the previous templates:
 ```yaml
