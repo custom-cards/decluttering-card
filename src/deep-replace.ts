@@ -2,8 +2,9 @@ import { VariablesConfig, TemplateConfig } from './types';
 import { LovelaceCardConfig } from 'custom-card-helpers';
 
 export default (variables: VariablesConfig[] | undefined, templateConfig: TemplateConfig): LovelaceCardConfig => {
+  const cardOrElement = templateConfig.card ?? templateConfig.element;
   if (!variables && !templateConfig.default) {
-    return templateConfig.card;
+    return cardOrElement;
   }
   let variableArray: VariablesConfig[] = [];
   if (variables) {
@@ -12,7 +13,7 @@ export default (variables: VariablesConfig[] | undefined, templateConfig: Templa
   if (templateConfig.default) {
     variableArray = variableArray.concat(templateConfig.default);
   }
-  let jsonConfig = templateConfig.card ? JSON.stringify(templateConfig.card) : JSON.stringify(templateConfig.element);
+  let jsonConfig = JSON.stringify(cardOrElement);
   variableArray.forEach(variable => {
     const key = Object.keys(variable)[0];
     const value = Object.values(variable)[0];
