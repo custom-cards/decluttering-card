@@ -34,3 +34,8 @@ export function getLovelace(): LovelaceConfig | null {
   }
   return null;
 }
+
+export function getLovelaceConfig(): LovelaceConfig | null {
+  const ll = getLovelace() || getLovelaceCast();
+  return ll?.config;
+}

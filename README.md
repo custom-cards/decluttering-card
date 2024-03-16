@@ -23,100 +23,267 @@ We all use multiple times the same block of configuration across our lovelace co
 
 ### Defining your templates
 
-First, you need to define your templates.
+There are two ways to define your templates. You can use both methods together.
 
-The templates are defined in an object at the root of your lovelace configuration. This object needs to be named `decluttering_templates`.
+#### Option 1. Create a template as a card with the visual editor or with YAML.
 
-This object needs to contains your templates declaration, each template has a name and can contain variables. A variable needs to be enclosed in double square brackets `[[variable_name]]`. It will later be replaced by a real value when you instanciate a card which uses this template. If a variable is alone on it's line, enclose it in single quotes: `'[[variable_name]]'`.
+Add a *Custom: Decluttering template* card in any view of your dashboard to define your template,
+set variables with their default values, and preview the results with those defaults with the
+visual editor. The card type is `custom:decluttering-template` in YAML.
 
-You can also define default values for your variables in the `default` object.
+You can place the template card anywhere and it will only visible when the dashboard is in edit mode.
+Each template must have a unique name.
 
-For a card:
+**Example:**
 
 ```yaml
-decluttering_templates:
-  <template_name>
-    default:  # This is optional
-      - <variable_name>: <variable_value>
-      - <variable_name>: <variable_value>
-      [...]
-    card:  # This is where you put your card config (it can be a card embedding other cards)
-      type: custom:my-super-card
-      [...]
+type: custom:decluttering-template
+template: follow_the_sun
+card:
+  type: entity
+  entity_id: sun.sun
 ```
 
-For a Picture-Element:
+#### Option 2. Create a template at the root of your lovelace configuration.
+
+Open your dashboard's YAML configuration file or click on the *Raw configuration editor* menu item
+in the dashboard.
+
+The templates are defined in an object at the root of your lovelace configuration. This object is
+named `decluttering_templates` and it contains your template declarations. Each template must have
+a unique name.
+
+**Example:**
 
 ```yaml
+title: Example Dashboard
 decluttering_templates:
-  <template_name>
-    default:  # This is optional
-      - <variable_name>: <variable_value>
-      - <variable_name>: <variable_value>
-      [...]
-    element:  # This is where you put your element config
+  follow_the_sun:
+    card:
+      type: entity
+      entity_id: sun.sun
+  touch_the_sun:
+    row:
+      type: button
+      entity: sun.sun
+      action_name: Boop
+  hello_sunshine:
+    element:
       type: icon
-      [...]
+      icon: mdi:weather-sunny
+      title: Hello!
+      style:
+        color: yellow
+views:
 ```
 
-Example in your `lovelace-ui.yaml`:
+**Syntax:**
+
 ```yaml
-resources:
-  - url: /local/decluttering-card.js
-    type: module
-
 decluttering_templates:
-  my_first_template:     # This is the name of a template
-    default:
-      - icon: fire
-    card:
-      type: custom:button-card
-      name: '[[name]]'
-      icon: 'mdi:[[icon]]'
+  <template name>:
+    <template content>
+  [...]
+```
 
-  my_second_template:    # This is the name of another template
-    card:
-      type: custom:vertical-stack-in-card
-      cards:
-        - type: horizontal-stack
-          cards:
-            - type: custom:button-card
-              entity: '[[entity_1]]'
-            - type: custom:button-card
-              entity: '[[entity_2]]'
+### Adding content to your templates
+
+You can make decluttering templates for cards, entity rows, and picture elements. Each content type
+has a different syntax and can be used in different places.
+
+#### [Card](https://www.home-assistant.io/dashboards/cards/)
+
+A decluttering template can hold a standard dashboard card, custom card, or another decluttering card.
+It is particularly useful for complex cards such as stacks, grids, and tiles.
+
+**Example:**
+
+```yaml
+type: custom:decluttering-template
+template: follow_the_sun
+card:
+  type: entity
+    entity_id: sun.sun
+```
+
+**Syntax:**
+
+```yaml
+type: custom:decluttering-template
+template: <template_name>
+card:
+  # This is where you put your [Card](https://www.home-assistant.io/dashboards/cards/) configuration (it can be a card embedding other cards)
+  type: <card_type>
+    [...]
+default:
+  # An optional list of variables and their default values to substitute into the template
+  - <variable_name>: <variable_value>
+  - <variable_name>: <variable_value>
+  [...]
+```
+
+#### [Entities card](https://www.home-assistant.io/dashboards/entities/) row
+
+A decluttering template can hold an Entities card row such as a Button row or a Conditional row.
+
+**Example:**
+
+```yaml
+type: custom:decluttering-template
+template: touch_the_sun
+row:
+  type: button
+  entity: sun.sun
+  action_name: Boop
+```
+
+**Syntax:**
+
+```yaml
+type: custom:decluttering-template
+template: <template_name>
+row:
+  # This is where you put your [Entities card](https://www.home-assistant.io/dashboards/entities/) row
+  type: <element_type>
+    [...]
+default:
+  # An optional list of variables and their default values to substitute into the template
+  - <variable_name>: <variable_value>
+  - <variable_name>: <variable_value>
+  [...]
+```
+
+#### [Picture elements card](https://www.home-assistant.io/dashboards/picture-elements/) element
+
+A decluttering template can hold a Picture elements card element such as an Icon or an Image.
+
+**Example:**
+
+```yaml
+type: custom:decluttering-template
+template: hello_sunshine
+element:
+  type: icon
+  icon: mdi:weather-sunny
+  title: Hello!
+  style:
+    color: yellow
+```
+
+**Syntax:**
+
+```yaml
+type: custom:decluttering-template
+template: <template_name>
+element:
+  # This is where you put your [Picture elements card](https://www.home-assistant.io/dashboards/picture-elements/) element configuration
+  type: <element_type>
+    [...]
+default:
+  # An optional list of variables and their default values to substitute into the template
+  - <variable_name>: <variable_value>
+  - <variable_name>: <variable_value>
+  [...]
+```
+
+#### Variables
+
+Templates can contain variables. Each variable will later be replaced by a real value when you
+instantiate a card which uses this template.
+
+A variable needs to be enclosed in double square brackets `[[variable_name]]`. If a variable is alone
+on its line, enclose it in single quotes: `'[[variable_name]]'`.
+
+You can also define default values for your variables in the `default` object. The visual editor uses the
+provided default values to render the preview.
+
+**Example:**
+
+```yaml
+type: custom:decluttering-template
+template: touch_anything
+row:
+  type: button
+  entity: '[[what]]'
+  action_name: '[[how]]'
+default:
+  what: sun.sun
+  how: 'Boop'
 ```
 
 ### Using the card
 
+If your template content is a card, add a *Custom: Decluttering card* to your dashboard
+to instantiate your template, set variables, and preview the results with the visual editor.
+The card type is `custom:decluttering-template` in YAML.
+
+If your template content is an Entities card row, first add a *Entities card* to your dashboard or
+open an existing one. Then switch to the code editor and add a new item to the `entities`
+list in YAML as shown below.
+
+If your template content is an Picture elements card element, first add a *Picture elements* to your
+dashboard or open an existing one. Then switch to the code editor and add a new item to the
+`elements` list in YAML as shown below.
+
+You can also use templates in different places than they were intended. For example, an
+Entities card row or Picture elements card element can be displayed as a card in the dashboard but
+it might not look right.
+
+**Example which references the previous templates:**
+
+```yaml
+type: vertical-stack
+cards:
+  # A card
+  - type: custom:decluttering-card
+    template: follow_the_sun
+  # An Entities card
+  - type: entities
+    entities:
+      # An entity row
+      - type: custom:decluttering-card
+        template: touch_the_sun
+      # An entity row with variables using default values
+      - type: custom:decluttering-card
+        template: touch_anything
+      # An entity row with variables using specified values
+      - type: custom:decluttering-card
+        template: touch_anything
+        variables:
+          - what: sensor.moon_phase
+          - how: 'Kiss'
+  # A Picture elements card
+  - type: picture-elements
+    elements:
+      - type: custom:decluttering-card
+        template: hello_sunshine
+        style:
+          top: 50%
+          left: 33%
+      - type: custom:decluttering-card
+        template: hello_sunshine
+        style:
+          top: 50%
+          left: 66%
+```
+
+**Syntax:**
+
 | Name | Type | Requirement | Description
 | ---- | ---- | ------- | -----------
 | type | string | **Required** | `custom:decluttering-card`
-| template | object | **Required** | The template to use from `decluttering_templates`
-| variables | list | **Optional** | List of variables and their value to replace in the `template`
-
-Example which references the previous templates:
-```yaml
-- type: custom:decluttering-card
-  template: my_first_template
-  variables:
-    - name: Test Button
-    - icon: arrow-up
-
-- type: custom:decluttering-card
-  template: my_first_template
-  variables: Default Icon Button
-
-- type: custom:decluttering-card
-  template: my_second_template
-  variables:
-    - entity_1: switch.my_switch
-    - entity_2: light.my_light
-```
-
+| template | object | **Required** | Name of your template
+| variables | list | **Optional** | List of variables and their values to replace in the template content
 
 ## Installation
 
-### Step 1
+### Using HACS
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=custom-cards&repository=decluttering-card&category=lovelace)
+
+### Manually
+
+#### Step 1
 
 Save [decluttering-card](https://github.com/custom-cards/decluttering-card/releases/download/latest/decluttering-card.js) to `<config directory>/www/decluttering-card.js` on your Home Assistant instanse.
 
@@ -127,7 +294,7 @@ wget https://raw.githubusercontent.com/custom-cards/decluttering-card/master/dis
 mv decluttering-card.js /config/www/
 ```
 
-### Step 2
+#### Step 2
 
 Link `decluttering-card` inside your `ui-lovelace.yaml` or Raw Editor in the UI Editor
 
@@ -136,10 +303,6 @@ resources:
   - url: /local/decluttering-card.js
     type: module
 ```
-
-### Step 3
-
-Add a custom element in your `ui-lovelace.yaml` or in the UI Editor as a Manual Card
 
 ## Troubleshooting
 
